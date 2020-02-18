@@ -1,6 +1,6 @@
-import { NativeModules, processColor } from 'react-native';
-import { androidApiErrorMap, androidModuleErrorMap } from './data/errors';
-import { getError, TouchIDError, TouchIDUnifiedError } from './errors';
+import { NativeModules, processColor } from "react-native";
+import { androidApiErrorMap, androidModuleErrorMap } from "./data/errors";
+import { getError, TouchIDError, TouchIDUnifiedError } from "./errors";
 const NativeTouchID = NativeModules.FingerprintAuth;
 
 export default {
@@ -10,8 +10,8 @@ export default {
         (error, code) => {
           return reject(createError(config, error, code));
         },
-        (biometryType) => {
-          return resolve(biometryType);
+        success => {
+          return resolve(true);
         }
       );
     });
@@ -19,15 +19,17 @@ export default {
 
   authenticate(reason, config) {
     var DEFAULT_CONFIG = {
-      title: 'Authentication Required',
-      imageColor: '#1306ff',
-      imageErrorColor: '#ff0000',
-      sensorDescription: 'Touch sensor',
-      sensorErrorDescription: 'Failed',
-      cancelText: 'Cancel',
+      title: "Authentication Required",
+      imageColor: "#1306ff",
+      imageErrorColor: "#ff0000",
+      sensorDescription: "Touch sensor",
+      sensorErrorDescription: "Failed",
+      errorFailedDescription: "Not recognized. Try again.",
+      errorLockedDescription: "Too many attempts. Try again Later.",
+      cancelText: "Cancel",
       unifiedErrors: false
     };
-    var authReason = reason ? reason : ' ';
+    var authReason = reason ? reason : " ";
     var authConfig = Object.assign({}, DEFAULT_CONFIG, config);
     var imageColor = processColor(authConfig.imageColor);
     var imageErrorColor = processColor(authConfig.imageErrorColor);
@@ -58,5 +60,5 @@ function createError(config, error, code) {
     return new TouchIDUnifiedError(getError(errorCode));
   }
 
-  return new TouchIDError('Touch ID Error', error, errorCode);
+  return new TouchIDError("Touch ID Error", error, errorCode);
 }
